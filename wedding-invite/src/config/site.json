@@ -1,0 +1,260 @@
+{
+  "settings": {
+    "languageToggle": true,
+    "defaultLanguage": "ro",
+    "availableLanguages": ["ru", "ro"]
+  },
+
+  "domains": {
+    "localhost": "DEFAULT",
+    "test1.com": "TEST1",
+    "test2.com": "TEST2"
+  },
+
+  "couple": {
+    "name1": "Александр",
+    "name2": "Аделина",
+    "date": "04.09.2027",
+    "dateShort": "04 · 09 · 2027"
+  },
+
+  "contacts": [
+    {
+      "name": { "ru": "Аделина", "ro": "Adelina" },
+      "role": { "ru": "Невеста", "ro": "Mireasă" },
+      "emoji": "👰",
+      "photo": "/mireasa.jpg",
+      "telegram": "https://t.me/Adelina_bride",
+      "phone": "tel:+79991234567"
+    },
+    {
+      "name": { "ru": "Александр", "ro": "Alexandr" },
+      "role": { "ru": "Жених", "ro": "Mire" },
+      "emoji": "🤵",
+      "photo": "/mire.jpg",
+      "telegram": "https://t.me/Alexandry_groom",
+      "phone": "tel:+79997654321"
+    }
+  ],
+
+  "venue": {
+    "name": "VisPas",
+    "mapUrl": "https://www.google.com/maps/place/Restaurant+VISPAS/@47.7687519,27.9408471,17z/data=!3m1!4b1!4m6!3m5!1s0x40cb61007d472723:0x51d87095d7ade578!8m2!3d47.7687519!4d27.9434274!16s%2Fg%2F11xgbd3jmq?entry=ttu&g_ep=EgoyMDI2MDIxOC4wIKXMDSoASAFQAw%3D%3D"
+  },
+
+  "timeline": {
+    "events": [
+      { "time": "16:00", "icon": "clock" },
+      { "time": "18:00", "icon": "ceremony" },
+      { "time": "20:00", "icon": "banquet" },
+      { "time": "22:00", "icon": "cake" },
+      { "time": "03:00", "icon": "end" }
+    ]
+  },
+
+  "dresscode": {
+    "palette": [
+      { "color": "#e8d9c0", "name": { "ru": "Шампань", "ro": "Șampanie" } },
+      { "color": "#f2e8e0", "name": { "ru": "Пудра", "ro": "Pudră" } },
+      { "color": "#c9a89a", "name": { "ru": "Пыльная роза", "ro": "Trandafir prăfuit" } },
+      { "color": "#9aab93", "name": { "ru": "Шалфей", "ro": "Salvie" } },
+      { "color": "#b8c4c8", "name": { "ru": "Туман", "ro": "Ceață" } },
+      { "color": "#d4c5b2", "name": { "ru": "Песок", "ro": "Nisip" } },
+      { "color": "#e8d5d5", "name": { "ru": "Нежный румянец", "ro": "Roz delicat" } }
+    ],
+    "wishes": [
+      { "icon": "👗" },
+      { "icon": "💌" },
+      { "icon": "🥂" },
+      { "icon": "👶" }
+    ]
+  },
+
+  "rsvp": {
+    "drinks": [
+      { "name": { "ru": "Игристое", "ro": "Spumant" } },
+      { "name": { "ru": "Белое вино", "ro": "Vin alb" } },
+      { "name": { "ru": "Красное вино", "ro": "Vin roșu" } },
+      { "name": { "ru": "Водка", "ro": "Vodcă" } },
+      { "name": { "ru": "Коньяк", "ro": "Coniac" } },
+      { "name": { "ru": "Не пью", "ro": "Nu beau alcool" } }
+    ],
+    "food": [
+      { "name": { "ru": "🥩 Мясо", "ro": "🥩 Carne" } },
+      { "name": { "ru": "🐟 Рыба", "ro": "🐟 Pește" } },
+      { "name": { "ru": "🥬 Вегетарианское", "ro": "🥬 Vegetarian" } },
+      { "name": { "ru": "🍽 Голубцы", "ro": "🍽 Sarmale" } },
+      { "name": { "ru": "⏸ Ничего не решил", "ro": "⏸ Inca nu m-am decis" } }
+    ]
+  },
+
+  "content": {
+    "ru": {
+      "hero": {
+        "preTitle": "Приглашение на свадьбу",
+        "name1": "Александр",
+        "name2": "Аделина",
+        "date": "04 сентября 2027",
+        "scrollHint": "листайте ниже"
+      },
+      "message": {
+        "subtitle": "Дорогие гости",
+        "title": "Мы приглашаем вас\nразделить наш день",
+        "paragraphs": [
+          "Настал момент, когда мы больше не можем терпеть пустоту на\u00a014-й\u00a0странице наших паспортов и бесконечные вопросы: «Ну\u00a0когда\u00a0уже?»",
+          "Именно поэтому мы решили узаконить свою любовь! Будем счастливы, если в этот день вы разделите с нами эту радость и станете частью нашего торжества."
+        ],
+        "signature": "С\u00a0любовью, Александр\u00a0&\u00a0Аделина\u00a0♡"
+      },
+      "venue": {
+        "subtitle": "Место проведения",
+        "description": "Банкетный зал «VisPas»",
+        "address": "Бельцы, Strada Ștefan cel Mare 1/2",
+        "mapButton": "Посмотреть на карте"
+      },
+      "timeline": {
+        "subtitle": "04 сентября 2027",
+        "title": "Расписание дня",
+        "events": [
+          { "title": "Сбор гостей", "desc": "Собираясь на торжество, возьмите с\u00a0собой улыбки и хорошее настроение" },
+          { "title": "Свадебная церемония", "desc": "Главный момент — клятвы, кольца и первый поцелуй как\u00a0муж\u00a0и\u00a0жена" },
+          { "title": "Начало банкета", "desc": "Время вкусной еды, танцев и незабываемых\u00a0развлечений" },
+          { "title": "Свадебный торт", "desc": "Сладкая традиция, которую мы не\u00a0можем обойти стороной" },
+          { "title": "Завершение вечера", "desc": "К сожалению, даже такой волшебный вечер когда‑то подходит к концу" }
+        ]
+      },
+      "dresscode": {
+        "subtitle": "Пожелания",
+        "title": "Просьбы & Дресс-код",
+        "paletteTitle": "Палитра цветов дресс-кода",
+        "wishes": [
+          { "title": "Дресс-код", "text": "Просим соблюдать пастельные оттенки в одежде. Посмотрите на палитру ниже." },
+          { "title": "Подарок", "text": "Свои тёплые слова и пожелания приносите в сердцах, а подарки — в конверте." },
+          { "title": "Без «Горько»", "text": "Вместо «Горько» мы придумали свою традицию — поцелуй за красивый тост!" },
+          { "title": "Дети", "text": "По возможности просим приходить без малышей — пусть этот вечер будет взрослым." }
+        ]
+      },
+      "rsvp": {
+        "subtitle": "Подтверждение",
+        "title": "Анкета гостя",
+        "description": "Ответьте на несколько вопросов, которые мы для вас подготовили",
+        "nameLabel": "Ваше имя и фамилия*",
+        "namePlaceholder": "Иван Иванов",
+        "nameError": "Пожалуйста, укажите ваше имя",
+        "attendanceLabel": "Сможете присутствовать?*",
+        "attendanceError": "Выберите вариант ответа",
+        "attendanceYes": "С удовольствием приду 🥳",
+        "attendanceNo": "К сожалению, не смогу 😔",
+        "attendanceLater": "Сообщу позже",
+        "childrenLabel": "Будут ли с вами дети?",
+        "childrenNo": "Нет",
+        "childrenYes": "Да",
+        "childrenPlaceholder": "Кол-во и возраст (напр. 2 детей, 4 и 7 лет)",
+        "drinksLabel": "Предпочтения по напиткам*",
+        "drinksError": "Выберите хотя бы один вариант",
+        "foodLabel": "Предпочтения по еде",
+        "foodMeat": "🥩 Мясо",
+        "foodFish": "🐟 Рыба",
+        "submitButton": "Отправить ответ",
+        "submitting": "Отправляем...",
+        "errorMessage": "Произошла ошибка. Попробуйте позже.",
+        "successTitle": "Спасибо!",
+        "successMessage": "Ваш ответ принят. Мы очень рады, что вы будете с нами! 💌"
+      },
+      "contacts": {
+        "subtitle": "Связаться с нами",
+        "title": "Контакты",
+        "telegram": "Telegram",
+        "call": "Позвонить"
+      },
+      "final": {
+        "withLove": "с любовью",
+        "message": "Мы очень ждём вас и с радостью готовимся\nк нашему незабываемому дню! ✨"
+      }
+    },
+
+    "ro": {
+      "hero": {
+        "preTitle": "Invitație la nuntă",
+        "name1": "Alexandr",
+        "name2": "Adelina",
+        "date": "04 septembrie 2027",
+        "scrollHint": "derulați mai jos"
+      },
+      "message": {
+        "subtitle": "Dragi invitați",
+        "title": "Vă invităm să împărțiți\nziua noastră",
+        "paragraphs": [
+          "A venit momentul în care nu mai putem suporta pagina goală din pașapoartele noastre și întrebările nesfârșite: «Când, în sfârșit?»",
+          "De aceea am decis să ne legalizăm dragostea! Vom fi fericiți dacă în această zi veți împărți cu noi această bucurie și veți deveni parte a sărbătorii noastre."
+        ],
+        "signature": "Cu\u00a0dragoste, Alexandr\u00a0&\u00a0Adelina\u00a0♡"
+      },
+      "venue": {
+        "subtitle": "Locul desfășurării",
+        "description": "Sala de banchet «VisPas»",
+        "address": "Balti, Strada Ștefan cel Mare 1/2",
+        "mapButton": "Vedeți pe hartă"
+      },
+      "timeline": {
+        "subtitle": "04 septembrie 2027",
+        "title": "Programul zilei",
+        "events": [
+          { "title": "Întâlnirea invitaților", "desc": "Veniți la sărbătoare cu zâmbete și bună dispoziție" },
+          { "title": "Ceremonia de nuntă", "desc": "Momentul principal — jurămintele, inelele și primul sărut ca\u00a0soț\u00a0și\u00a0soție" },
+          { "title": "Începutul banchetului", "desc": "Timp pentru mâncare delicioasă, dansuri și distracție" },
+          { "title": "Tortul de nuntă", "desc": "O tradiție dulce de care nu ne putem lipsi" },
+          { "title": "Sfârșitul serii", "desc": "Din păcate, chiar și o seară atât de magică se termină" }
+        ]
+      },
+      "dresscode": {
+        "subtitle": "Dorințe",
+        "title": "Cereri & Dress code",
+        "paletteTitle": "Paleta de culori pentru dress code",
+        "wishes": [
+          { "title": "Dress code", "text": "Vă rugăm să respectați tonurile pastelate în îmbrăcăminte. Vedeți paleta de mai jos." },
+          { "title": "Cadou", "text": "Cuvintele calde și urările aduceți-le în inimi, iar cadourile — într-un plic." },
+          { "title": "Fără «Amaro»", "text": "În loc de «Amaro» am inventat propria noastră tradiție — un sărut pentru un toast frumos!" },
+          { "title": "Copii", "text": "Pe cât posibil, vă rugăm să veniți fără copii — lăsați această seară să fie pentru adulți." }
+        ]
+      },
+      "rsvp": {
+        "subtitle": "Confirmare",
+        "title": "Chestionar invitat",
+        "description": "Răspundeți la câteva întrebări pe care le-am pregătit pentru dumneavoastră",
+        "nameLabel": "Numele și prenumele dvs.*",
+        "namePlaceholder": "Ion Popescu",
+        "nameError": "Vă rugăm să indicați numele dvs.",
+        "attendanceLabel": "Veți putea participa?*",
+        "attendanceError": "Alegeți o variantă de răspuns",
+        "attendanceYes": "Cu plăcere voi veni 🥳",
+        "attendanceNo": "Din păcate, nu voi putea 😔",
+        "attendanceLater": "Voi comunica mai târziu",
+        "childrenLabel": "Veți veni cu copii?",
+        "childrenNo": "Nu",
+        "childrenYes": "Da",
+        "childrenPlaceholder": "Număr și vârstă (ex. 2 copii, 4 și 7 ani)",
+        "drinksLabel": "Preferințe băuturi*",
+        "drinksError": "Alegeți cel puțin o variantă",
+        "foodLabel": "Preferințe mâncare",
+        "foodMeat": "🥩 Carne",
+        "foodFish": "🐟 Pește",
+        "submitButton": "Trimite răspunsul",
+        "submitting": "Se trimite...",
+        "errorMessage": "A apărut o eroare. Încercați mai târziu.",
+        "successTitle": "Mulțumim!",
+        "successMessage": "Răspunsul dvs. a fost acceptat. Suntem foarte bucuroși că veți fi alături de noi! 💌"
+      },
+      "contacts": {
+        "subtitle": "Contactați-ne",
+        "title": "Contacte",
+        "telegram": "Telegram",
+        "call": "Sunați"
+      },
+      "final": {
+        "withLove": "cu dragoste",
+        "message": "Vă așteptăm cu nerăbdare și ne pregătim\npentru ziua noastră de neuitat! ✨"
+      }
+    }
+  }
+}

@@ -1,0 +1,194 @@
+@import "tailwindcss";
+
+:root {
+  --cream: #faf7f2;
+  --blush: #f2e8e0;
+  --rose: #c9a89a;
+  --dusty-rose: #b8867a;
+  --sage: #9aab93;
+  --champagne: #e8d9c0;
+  --warm-brown: #6b4f3a;
+  --text-dark: #2c2118;
+  --text-mid: #5a4035;
+}
+
+@theme inline {
+  --font-heading: var(--font-cormorant);
+  --font-body: var(--font-montserrat);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--cream);
+  color: var(--text-dark);
+  font-family: var(--font-montserrat), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Scroll reveal base */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger children */
+.stagger-children > * {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.stagger-children.visible > *:nth-child(1) { transition-delay: 0ms; }
+.stagger-children.visible > *:nth-child(2) { transition-delay: 100ms; }
+.stagger-children.visible > *:nth-child(3) { transition-delay: 200ms; }
+.stagger-children.visible > *:nth-child(4) { transition-delay: 300ms; }
+.stagger-children.visible > *:nth-child(5) { transition-delay: 400ms; }
+.stagger-children.visible > *:nth-child(6) { transition-delay: 500ms; }
+.stagger-children.visible > *:nth-child(7) { transition-delay: 600ms; }
+.stagger-children.visible > *:nth-child(8) { transition-delay: 700ms; }
+
+.stagger-children.visible > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Pop-in for color circles */
+.pop-in {
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 0.5s ease-out, transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.pop-in.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Float animation for hero decor */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+.float-anim {
+  animation: float 7s ease-in-out infinite;
+}
+
+/* Shake for form error */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+.shake {
+  animation: shake 0.35s ease-in-out;
+}
+
+/* Fade in for modal */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.modal-enter {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Divider line */
+.divider {
+  width: 60px;
+  height: 1px;
+  background: var(--rose);
+  margin: 0 auto;
+}
+
+/* Button base */
+.btn-rose {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 32px;
+  border-radius: 50px;
+  background: var(--dusty-rose);
+  color: #fff;
+  font-family: var(--font-montserrat), sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s, box-shadow 0.3s, transform 0.15s;
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.btn-rose:hover {
+  background: var(--warm-brown);
+  box-shadow: 0 4px 16px rgba(107,79,58,0.25);
+}
+
+.btn-rose:active {
+  transform: scale(0.97);
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 28px;
+  border-radius: 50px;
+  background: transparent;
+  color: var(--dusty-rose);
+  font-family: var(--font-montserrat), sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1.5px solid var(--dusty-rose);
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s, transform 0.15s;
+  min-height: 44px;
+  min-width: 44px;
+  text-decoration: none;
+}
+
+.btn-outline:hover {
+  background: var(--dusty-rose);
+  color: #fff;
+}
+
+.btn-outline:active {
+  transform: scale(0.97);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .stagger-children > *, .pop-in {
+    transition: opacity 0.2s ease-out !important;
+    transform: none !important;
+  }
+  .float-anim { animation: none !important; }
+}
