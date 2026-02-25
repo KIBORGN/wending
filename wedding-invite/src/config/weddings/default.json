@@ -5,8 +5,7 @@
   "couple": {
     "date": "04.09.2027",
     "dateShort": "04 · 09 · 2027",
-    "photo1": "/mire.jpg",
-    "photo2": "/mireasa.jpg",
+    "couplePhoto": "/couple.jpg",
     "phone1": "tel:+79997654321",
     "phone2": "tel:+79991234567"
   },

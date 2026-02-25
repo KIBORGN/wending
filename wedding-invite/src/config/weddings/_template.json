@@ -5,8 +5,7 @@
   "couple": {
     "date": "DD.MM.YYYY",
     "dateShort": "DD · MM · YYYY",
-    "photo1": "/groom.jpg",
-    "photo2": "/bride.jpg",
+    "couplePhoto": "/couple.jpg",
     "phone1": "tel:+7XXXXXXXXXX",
     "phone2": "tel:+7XXXXXXXXXX"
   },

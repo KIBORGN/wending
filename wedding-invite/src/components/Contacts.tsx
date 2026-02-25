@@ -43,7 +43,7 @@ export default function Contacts() {
             style={{
               background: "#fff",
               borderRadius: 20,
-              padding: "32px 24px",
+              padding: "26px 24px",
               boxShadow: "0 2px 16px rgba(107,79,58,0.07)",
               display: "flex",
               flexDirection: "column",
@@ -51,62 +51,26 @@ export default function Contacts() {
               gap: 16,
             }}
           >
-            {/* Photos side by side */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                gap: 16,
-                marginBottom: 4,
-              }}
-            >
-              {couple.photo1 && (
-                <div
-                  style={{
-                    width: 130,
-                    height: 130,
-                    borderRadius: 12,
-                    overflow: "hidden",
-                    flexShrink: 0,
-                  }}
-                >
-                  <Image
-                    src={couple.photo1}
-                    alt={hero.name1}
-                    width={130}
-                    height={130}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
-                </div>
-              )}
-              {couple.photo2 && (
-                <div
-                  style={{
-                    width: 130,
-                    height: 130,
-                    borderRadius: 12,
-                    overflow: "hidden",
-                    flexShrink: 0,
-                  }}
-                >
-                  <Image
-                    src={couple.photo2}
-                    alt={hero.name2}
-                    width={130}
-                    height={130}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
-                </div>
-              )}
-            </div>
+            {/* Single couple photo */}
+            {couple.couplePhoto && (
+              <div
+                style={{
+                  width: "100%",
+                  height: 280,
+                  borderRadius: 12,
+                  overflow: "hidden",
+                  position: "relative",
+                  marginBottom: 4,
+                }}
+              >
+                <Image
+                  src={couple.couplePhoto}
+                  alt={`${hero.name1} & ${hero.name2}`}
+                  fill
+                  style={{ objectFit: "cover" }}
+                />
+              </div>
+            )}
 
             {/* Combined names */}
             <div>
@@ -134,10 +98,11 @@ export default function Contacts() {
               </p>
             </div>
 
-            {/* Two call buttons */}
+            {/* Two call buttons — stacked */}
             <div
               style={{
                 display: "flex",
+                flexDirection: "column",
                 gap: 10,
                 width: "100%",
                 marginTop: 8,
@@ -150,7 +115,7 @@ export default function Contacts() {
                   textDecoration: "none",
                   fontSize: 11,
                   padding: "9px 14px",
-                  flex: 1,
+                  width: "100%",
                   textAlign: "center",
                 }}
               >
@@ -163,7 +128,7 @@ export default function Contacts() {
                   textDecoration: "none",
                   fontSize: 11,
                   padding: "9px 14px",
-                  flex: 1,
+                  width: "100%",
                   textAlign: "center",
                 }}
               >
