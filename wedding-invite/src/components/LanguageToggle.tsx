@@ -2,10 +2,10 @@
 import { useLang } from "@/context/LanguageContext";
 
 export default function LanguageToggle() {
-  const { lang, toggleLang, cfg } = useLang();
+  const { lang, toggleLang, settings } = useLang();
 
-  // Toggle can be disabled in site.json → settings.languageToggle = false
-  if (!cfg.settings.languageToggle) return null;
+  // Toggle can be disabled in domains.json → settings.languageToggle = false
+  if (!settings.languageToggle) return null;
 
   return (
     <button

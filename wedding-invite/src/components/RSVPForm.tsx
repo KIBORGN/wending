@@ -9,7 +9,7 @@ interface FormData {
   children: "no" | "yes" | "";
   childrenCount: string;
   drinks: string[];
-  food: string;
+  food: string[];
 }
 
 const INITIAL: FormData = {
@@ -18,7 +18,7 @@ const INITIAL: FormData = {
   children: "no",
   childrenCount: "",
   drinks: [],
-  food: "",
+  food: [],
 };
 
 export default function RSVPForm() {
@@ -84,6 +84,16 @@ export default function RSVPForm() {
       drinks: f.drinks.includes(drinkName) ? f.drinks.filter((x) => x !== drinkName) : [...f.drinks, drinkName],
     }));
     setErrors((e) => ({ ...e, drinks: undefined }));
+  };
+
+  const foods = cfg.rsvp.food;
+
+  const toggleFood = (idx: number) => {
+    const foodName = foods[idx].name.ru;
+    setForm((f) => ({
+      ...f,
+      food: f.food.includes(foodName) ? f.food.filter((x) => x !== foodName) : [...f.food, foodName],
+    }));
   };
 
   const labelStyle: React.CSSProperties = {
@@ -357,49 +367,35 @@ export default function RSVPForm() {
               )}
             </div>
 
-            {/* Food */}
+            {/* Food (multi-select, like drinks) */}
             <div>
               <label style={labelStyle}>{r.foodLabel}</label>
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {cfg.rsvp.food.map((f: { name: Record<string, string> }, idx: number) => (
-                  <div
-                    key={idx}
-                    onClick={() => setForm((fd) => ({ ...fd, food: f.name.ru }))}
-                    style={{
-                      ...radioStyle,
-                      marginBottom: 0,
-                      borderColor:
-                        form.food === f.name.ru ? "var(--dusty-rose)" : "var(--champagne)",
-                      background: form.food === f.name.ru ? "#fdf4f1" : "#fff",
-                    }}
-                  >
-                    <div
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {foods.map((f: { name: Record<string, string> }, idx: number) => {
+                  const foodName = f.name.ru;
+                  const isSelected = form.food.includes(foodName);
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => toggleFood(idx)}
                       style={{
-                        width: 18,
-                        height: 18,
-                        borderRadius: "50%",
-                        border: `2px solid ${form.food === f.name.ru ? "var(--dusty-rose)" : "var(--champagne)"}`,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexShrink: 0,
-                        transition: "border-color 0.2s",
+                        padding: "10px 16px",
+                        borderRadius: 50,
+                        border: `1.5px solid ${isSelected ? "var(--dusty-rose)" : "var(--champagne)"}`,
+                        background: isSelected ? "#fdf4f1" : "#fff",
+                        color: isSelected ? "var(--dusty-rose)" : "var(--text-mid)",
+                        fontFamily: "var(--font-montserrat), sans-serif",
+                        fontSize: "clamp(12px, 3vw, 13px)",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                        minHeight: 44,
                       }}
                     >
-                      {form.food === f.name.ru && (
-                        <div
-                          style={{
-                            width: 8,
-                            height: 8,
-                            borderRadius: "50%",
-                            background: "var(--dusty-rose)",
-                          }}
-                        />
-                      )}
-                    </div>
-                    {f.name[lang]}
-                  </div>
-                ))}
+                      {f.name[lang]}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 

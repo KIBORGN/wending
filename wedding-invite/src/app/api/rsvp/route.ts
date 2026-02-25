@@ -1,33 +1,73 @@
 import { NextRequest, NextResponse } from "next/server";
-import siteConfig from "@/config/site.json";
+import { getWeddingByDomain } from "@/config";
 
 /**
  * Resolve the Telegram chat ID based on the incoming domain.
- * Uses the "domains" mapping in site.json → env variable lookup.
- *
- * site.json domains example:
- *   "localhost": "default",
- *   "test1.com": "CHAT_ID_FOR_TEST1"
- *
- * Corresponding .env variables:
- *   TELEGRAM_CHAT_ID_DEFAULT=-5201219877
- *   TELEGRAM_CHAT_ID_FOR_TEST1=-123456789
+ * domains.json maps domain → wedding ID
+ * Each wedding has telegramChatKey → env variable TELEGRAM_CHAT_ID_{KEY}
  */
 function resolveChatId(host: string | null): string | undefined {
   if (!host) return process.env.TELEGRAM_CHAT_ID_DEFAULT;
 
-  // Strip port (e.g. localhost:3000 → localhost)
   const domain = host.split(":")[0].toLowerCase();
+  const wedding = getWeddingByDomain(domain);
+  const chatId =
+    process.env[`TELEGRAM_CHAT_ID_${wedding.telegramChatKey.toUpperCase()}`];
+  return chatId || process.env.TELEGRAM_CHAT_ID_DEFAULT;
+}
 
-  // Look up in config
-  const envKey = siteConfig.domains[domain as keyof typeof siteConfig.domains];
-  if (envKey) {
-    const chatId = process.env[`TELEGRAM_CHAT_ID_${envKey.toUpperCase()}`];
-    if (chatId) return chatId;
+/**
+ * Send message via external telegram-bot service, or fallback to direct Telegram API.
+ */
+async function sendTelegram(
+  chatId: string,
+  text: string
+): Promise<{ ok: boolean; error?: string }> {
+  const botApiUrl = process.env.BOT_API_URL;
+
+  if (botApiUrl) {
+    // ── External telegram-bot microservice ──
+    const res = await fetch(botApiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(process.env.BOT_SECRET
+          ? { Authorization: `Bearer ${process.env.BOT_SECRET}` }
+          : {}),
+      },
+      body: JSON.stringify({ chatId, text, parseMode: "Markdown" }),
+    });
+    if (!res.ok) {
+      const err = await res.text();
+      return { ok: false, error: err };
+    }
+    return { ok: true };
   }
 
-  // Fallback to default
-  return process.env.TELEGRAM_CHAT_ID_DEFAULT;
+  // ── Fallback: direct Telegram API ──
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  if (!token) {
+    console.log("RSVP received (no TG creds):", text);
+    return { ok: true };
+  }
+
+  const res = await fetch(
+    `https://api.telegram.org/bot${token}/sendMessage`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text,
+        parse_mode: "Markdown",
+      }),
+    }
+  );
+  if (!res.ok) {
+    const err = await res.text();
+    return { ok: false, error: err };
+  }
+  return { ok: true };
 }
 
 export async function POST(req: NextRequest) {
@@ -35,17 +75,10 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { name, attendance, children, childrenCount, drinks, food } = body;
 
-    // Build Telegram message
     const attendanceMap: Record<string, string> = {
       yes: "✅ Придёт",
       no: "❌ Не придёт",
       later: "⏳ Сообщит позже",
-    };
-
-    const foodMap: Record<string, string> = {
-      meat: "🥩 Мясо",
-      fish: "🐟 Рыба",
-      "": "Не указано",
     };
 
     const host = req.headers.get("host");
@@ -57,41 +90,33 @@ export async function POST(req: NextRequest) {
       `👤 *Имя:* ${name}`,
       `📅 *Присутствие:* ${attendanceMap[attendance] ?? attendance}`,
       `👶 *Дети:* ${children === "yes" ? `Да — ${childrenCount || "не указано"}` : "Нет"}`,
-      `🍷 *Напитки:* ${drinks?.join(", ") || "не указано"}`,
-      `🍽 *Еда:* ${foodMap[food] ?? "не указано"}`,
+      `🍷 *Напитки:* ${drinks?.length ? drinks.join(", ") : "не указано"}`,
+      `🍽 *Еда:* ${food?.length ? food.join(", ") : "не указано"}`,
     ].join("\n");
 
-    const token = process.env.TELEGRAM_BOT_TOKEN;
     const chatId = resolveChatId(host);
 
-    if (!token || !chatId) {
-      // Dev mode — just log and return success
-      console.log("RSVP received (no TG creds):", message);
+    if (!chatId) {
+      console.log("RSVP received (no chatId):", message);
       return NextResponse.json({ ok: true });
     }
 
-    const tgRes = await fetch(
-      `https://api.telegram.org/bot${token}/sendMessage`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: message,
-          parse_mode: "Markdown",
-        }),
-      }
-    );
+    const result = await sendTelegram(chatId, message);
 
-    if (!tgRes.ok) {
-      const err = await tgRes.text();
-      console.error("Telegram error:", err);
-      return NextResponse.json({ ok: false, error: err }, { status: 500 });
+    if (!result.ok) {
+      console.error("Telegram send error:", result.error);
+      return NextResponse.json(
+        { ok: false, error: result.error },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error(err);
-    return NextResponse.json({ ok: false, error: "Server error" }, { status: 500 });
+    return NextResponse.json(
+      { ok: false, error: "Server error" },
+      { status: 500 }
+    );
   }
 }

@@ -4,9 +4,10 @@ import ScrollReveal from "./ScrollReveal";
 import { useLang } from "@/context/LanguageContext";
 
 export default function Contacts() {
-  const { lang, t, cfg } = useLang();
+  const { t, cfg } = useLang();
   const c = t("contacts") as Record<string, string>;
-  const contacts = cfg.contacts;
+  const hero = t("hero") as Record<string, string>;
+  const couple = cfg.couple;
 
   return (
     <section style={{ padding: "72px 20px", background: "var(--blush)" }}>
@@ -37,106 +38,138 @@ export default function Contacts() {
           </h2>
           <div className="divider" style={{ marginBottom: "2.5rem" }} />
 
+          {/* Single combined card */}
           <div
             style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
+              background: "#fff",
+              borderRadius: 20,
+              padding: "32px 24px",
+              boxShadow: "0 2px 16px rgba(107,79,58,0.07)",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
               gap: 16,
             }}
           >
-            {contacts.map((ct: { name: Record<string, string>; role: Record<string, string>; emoji: string; photo?: string; telegram: string; phone: string }, i: number) => (
-              <div
-                key={i}
+            {/* Photos side by side */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: 16,
+                marginBottom: 4,
+              }}
+            >
+              {couple.photo1 && (
+                <div
+                  style={{
+                    width: 130,
+                    height: 130,
+                    borderRadius: 12,
+                    overflow: "hidden",
+                    flexShrink: 0,
+                  }}
+                >
+                  <Image
+                    src={couple.photo1}
+                    alt={hero.name1}
+                    width={130}
+                    height={130}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                </div>
+              )}
+              {couple.photo2 && (
+                <div
+                  style={{
+                    width: 130,
+                    height: 130,
+                    borderRadius: 12,
+                    overflow: "hidden",
+                    flexShrink: 0,
+                  }}
+                >
+                  <Image
+                    src={couple.photo2}
+                    alt={hero.name2}
+                    width={130}
+                    height={130}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Combined names */}
+            <div>
+              <p
                 style={{
-                  background: "#fff",
-                  borderRadius: 20,
-                  padding: "32px 16px",
-                  boxShadow: "0 2px 16px rgba(107,79,58,0.07)",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: 10,
+                  fontFamily: "var(--font-cormorant), serif",
+                  fontSize: "clamp(20px, 5vw, 26px)",
+                  fontWeight: 500,
+                  color: "var(--text-dark)",
                 }}
               >
-                {/* Photo or Avatar */}
-                {ct.photo ? (
-                  <div
-                    style={{
-                      width: 200,
-                      height: 200,
-                      borderRadius: 12,
-                      overflow: "hidden",
-                      marginTop: "-8px",
-                      marginBottom: "8px",
-                      flexShrink: 0,
-                    }}
-                  >
-                    <Image
-                      src={ct.photo}
-                      alt={ct.name[lang]}
-                      width={150}
-                      height={150}
-                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                    />
-                  </div>
-                ) : (
-                  <div
-                    style={{
-                      width: 60,
-                      height: 60,
-                      borderRadius: "50%",
-                      background: "linear-gradient(135deg, var(--champagne), var(--rose))",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 24,
-                    }}
-                  >
-                    {ct.emoji}
-                  </div>
-                )}
+                {hero.name1}&nbsp;&amp;&nbsp;{hero.name2}
+              </p>
+              <p
+                style={{
+                  fontFamily: "var(--font-montserrat), sans-serif",
+                  fontSize: 11,
+                  letterSpacing: "0.15em",
+                  textTransform: "uppercase",
+                  color: "var(--dusty-rose)",
+                  marginTop: 4,
+                }}
+              >
+                {c.role1}&nbsp;&amp;&nbsp;{c.role2}
+              </p>
+            </div>
 
-                <div>
-                  <p
-                    style={{
-                      fontFamily: "var(--font-cormorant), serif",
-                      fontSize: "clamp(18px, 5vw, 22px)",
-                      fontWeight: 500,
-                      color: "var(--text-dark)",
-                    }}
-                  >
-                    {ct.name[lang]}
-                  </p>
-                  <p
-                    style={{
-                      fontFamily: "var(--font-montserrat), sans-serif",
-                      fontSize: 11,
-                      letterSpacing: "0.15em",
-                      textTransform: "uppercase",
-                      color: "var(--dusty-rose)",
-                    }}
-                  >
-                    {ct.role[lang]}
-                  </p>
-                </div>
-
-                <div style={{ display: "flex", flexDirection: "column", gap: 8, width: "100%" }}>
-                  <a
-                    href={ct.phone}
-                    className="btn-outline"
-                    style={{
-                      textDecoration: "none",
-                      fontSize: 11,
-                      padding: "9px 14px",
-                      width: "90%",
-                      marginTop: "8px",
-                    }}
-                  >
-                    {c.call}
-                  </a>
-                </div>
-              </div>
-            ))}
+            {/* Two call buttons */}
+            <div
+              style={{
+                display: "flex",
+                gap: 10,
+                width: "100%",
+                marginTop: 8,
+              }}
+            >
+              <a
+                href={couple.phone1}
+                className="btn-outline"
+                style={{
+                  textDecoration: "none",
+                  fontSize: 11,
+                  padding: "9px 14px",
+                  flex: 1,
+                  textAlign: "center",
+                }}
+              >
+                📞 {hero.name1}
+              </a>
+              <a
+                href={couple.phone2}
+                className="btn-outline"
+                style={{
+                  textDecoration: "none",
+                  fontSize: 11,
+                  padding: "9px 14px",
+                  flex: 1,
+                  textAlign: "center",
+                }}
+              >
+                📞 {hero.name2}
+              </a>
+            </div>
           </div>
         </ScrollReveal>
       </div>

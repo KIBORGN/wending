@@ -1,41 +1,15 @@
 {
-  "settings": {
-    "languageToggle": true,
-    "defaultLanguage": "ro",
-    "availableLanguages": ["ru", "ro"]
-  },
-
-  "domains": {
-    "localhost": "DEFAULT",
-    "test1.com": "TEST1",
-    "test2.com": "TEST2"
-  },
+  "id": "default",
+  "telegramChatKey": "DEFAULT",
 
   "couple": {
-    "name1": "Александр",
-    "name2": "Аделина",
     "date": "04.09.2027",
-    "dateShort": "04 · 09 · 2027"
+    "dateShort": "04 · 09 · 2027",
+    "photo1": "/mire.jpg",
+    "photo2": "/mireasa.jpg",
+    "phone1": "tel:+79997654321",
+    "phone2": "tel:+79991234567"
   },
-
-  "contacts": [
-    {
-      "name": { "ru": "Аделина", "ro": "Adelina" },
-      "role": { "ru": "Невеста", "ro": "Mireasă" },
-      "emoji": "👰",
-      "photo": "/mireasa.jpg",
-      "telegram": "https://t.me/Adelina_bride",
-      "phone": "tel:+79991234567"
-    },
-    {
-      "name": { "ru": "Александр", "ro": "Alexandr" },
-      "role": { "ru": "Жених", "ro": "Mire" },
-      "emoji": "🤵",
-      "photo": "/mire.jpg",
-      "telegram": "https://t.me/Alexandry_groom",
-      "phone": "tel:+79997654321"
-    }
-  ],
 
   "venue": {
     "name": "VisPas",
@@ -153,8 +127,6 @@
         "drinksLabel": "Предпочтения по напиткам*",
         "drinksError": "Выберите хотя бы один вариант",
         "foodLabel": "Предпочтения по еде",
-        "foodMeat": "🥩 Мясо",
-        "foodFish": "🐟 Рыба",
         "submitButton": "Отправить ответ",
         "submitting": "Отправляем...",
         "errorMessage": "Произошла ошибка. Попробуйте позже.",
@@ -164,8 +136,9 @@
       "contacts": {
         "subtitle": "Связаться с нами",
         "title": "Контакты",
-        "telegram": "Telegram",
-        "call": "Позвонить"
+        "call": "Позвонить",
+        "role1": "Жених",
+        "role2": "Невеста"
       },
       "final": {
         "withLove": "с любовью",
@@ -237,8 +210,6 @@
         "drinksLabel": "Preferințe băuturi*",
         "drinksError": "Alegeți cel puțin o variantă",
         "foodLabel": "Preferințe mâncare",
-        "foodMeat": "🥩 Carne",
-        "foodFish": "🐟 Pește",
         "submitButton": "Trimite răspunsul",
         "submitting": "Se trimite...",
         "errorMessage": "A apărut o eroare. Încercați mai târziu.",
@@ -248,8 +219,9 @@
       "contacts": {
         "subtitle": "Contactați-ne",
         "title": "Contacte",
-        "telegram": "Telegram",
-        "call": "Sunați"
+        "call": "Sunați",
+        "role1": "Mire",
+        "role2": "Mireasă"
       },
       "final": {
         "withLove": "cu dragoste",
