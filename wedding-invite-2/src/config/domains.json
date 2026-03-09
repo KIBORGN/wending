@@ -1,0 +1,11 @@
+{
+  "settings": {
+    "languageToggle": true,
+    "defaultLanguage": "ro",
+    "availableLanguages": ["ru", "ro"]
+  },
+  "domains": {
+    "localhost": "default",
+    "test.uni-rust.com": "default"
+  }
+}

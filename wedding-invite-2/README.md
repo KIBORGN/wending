@@ -137,7 +137,6 @@ nano /root/wending/wedding-invite/.env.local
 Добавь:
 
 \`\`\`dotenv
-
 TELEGRAM_CHAT_ID_DEFAULT=-5201219877
 TELEGRAM_CHAT_ID_TEST_UNI_RUST=-123456789
 \`\`\`

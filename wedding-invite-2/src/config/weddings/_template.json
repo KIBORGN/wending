@@ -1,0 +1,211 @@
+{
+  "id": "CHANGE_ME",
+  "telegramChatKey": "CHANGE_ME",
+
+  "couple": {
+    "date": "DD.MM.YYYY",
+    "dateShort": "DD · MM · YYYY",
+    "couplePhoto": "/couple.jpg",
+    "phone1": "tel:+7XXXXXXXXXX",
+    "phone2": "tel:+7XXXXXXXXXX"
+  },
+
+  "venue": {
+    "name": "Название зала",
+    "mapUrl": "https://www.google.com/maps/..."
+  },
+
+  "timeline": {
+    "events": [
+      { "time": "16:00", "icon": "clock" },
+      { "time": "18:00", "icon": "ceremony" },
+      { "time": "20:00", "icon": "banquet" },
+      { "time": "22:00", "icon": "cake" },
+      { "time": "03:00", "icon": "end" }
+    ]
+  },
+
+  "dresscode": {
+    "palette": [
+      { "color": "#e8d9c0", "name": { "ru": "Шампань", "ro": "Șampanie" } },
+      { "color": "#f2e8e0", "name": { "ru": "Пудра", "ro": "Pudră" } }
+    ],
+    "wishes": [
+      { "icon": "👗" },
+      { "icon": "💌" }
+    ]
+  },
+
+  "rsvp": {
+    "drinks": [
+      { "name": { "ru": "Игристое", "ro": "Spumant" } },
+      { "name": { "ru": "Не пью", "ro": "Nu beau alcool" } }
+    ],
+    "food": [
+      { "name": { "ru": "🥩 Мясо", "ro": "🥩 Carne" } },
+      { "name": { "ru": "🐟 Рыба", "ro": "🐟 Pește" } }
+    ]
+  },
+
+  "content": {
+    "ru": {
+      "hero": {
+        "preTitle": "Приглашение на свадьбу",
+        "name1": "Имя жениха",
+        "name2": "Имя невесты",
+        "date": "DD месяц YYYY",
+        "scrollHint": "листайте ниже"
+      },
+      "message": {
+        "subtitle": "Дорогие гости",
+        "title": "Мы приглашаем вас\nразделить наш день",
+        "paragraphs": [
+          "Текст приглашения..."
+        ],
+        "signature": "С\u00a0любовью, Имя\u00a0&\u00a0Имя\u00a0♡"
+      },
+      "venue": {
+        "subtitle": "Место проведения",
+        "description": "Название зала",
+        "address": "Адрес",
+        "mapButton": "Посмотреть на карте"
+      },
+      "timeline": {
+        "subtitle": "DD месяц YYYY",
+        "title": "Расписание дня",
+        "events": [
+          { "title": "Сбор гостей", "desc": "Описание..." },
+          { "title": "Свадебная церемония", "desc": "Описание..." },
+          { "title": "Начало банкета", "desc": "Описание..." },
+          { "title": "Свадебный торт", "desc": "Описание..." },
+          { "title": "Завершение вечера", "desc": "Описание..." }
+        ]
+      },
+      "dresscode": {
+        "subtitle": "Пожелания",
+        "title": "Просьбы & Дресс-код",
+        "paletteTitle": "Палитра цветов дресс-кода",
+        "wishes": [
+          { "title": "Дресс-код", "text": "Описание..." },
+          { "title": "Подарок", "text": "Описание..." }
+        ]
+      },
+      "rsvp": {
+        "subtitle": "Подтверждение",
+        "title": "Анкета гостя",
+        "description": "Ответьте на несколько вопросов",
+        "nameLabel": "Ваше имя и фамилия*",
+        "namePlaceholder": "Иван Иванов",
+        "nameError": "Пожалуйста, укажите ваше имя",
+        "attendanceLabel": "Сможете присутствовать?*",
+        "attendanceError": "Выберите вариант ответа",
+        "attendanceYes": "С удовольствием приду 🥳",
+        "attendanceNo": "К сожалению, не смогу 😔",
+        "attendanceLater": "Сообщу позже",
+        "childrenLabel": "Будут ли с вами дети?",
+        "childrenNo": "Нет",
+        "childrenYes": "Да",
+        "childrenPlaceholder": "Кол-во и возраст",
+        "drinksLabel": "Предпочтения по напиткам*",
+        "drinksError": "Выберите хотя бы один вариант",
+        "foodLabel": "Предпочтения по еде",
+        "submitButton": "Отправить ответ",
+        "submitting": "Отправляем...",
+        "errorMessage": "Произошла ошибка. Попробуйте позже.",
+        "successTitle": "Спасибо!",
+        "successMessage": "Ваш ответ принят. 💌"
+      },
+      "contacts": {
+        "subtitle": "Связаться с нами",
+        "title": "Контакты",
+        "call": "Позвонить",
+        "role1": "Жених",
+        "role2": "Невеста"
+      },
+      "final": {
+        "withLove": "с любовью",
+        "message": "Мы очень ждём вас! ✨"
+      }
+    },
+
+    "ro": {
+      "hero": {
+        "preTitle": "Invitație la nuntă",
+        "name1": "Numele mirelui",
+        "name2": "Numele miresei",
+        "date": "DD luna YYYY",
+        "scrollHint": "derulați mai jos"
+      },
+      "message": {
+        "subtitle": "Dragi invitați",
+        "title": "Vă invităm să împărțiți\nziua noastră",
+        "paragraphs": [
+          "Textul invitației..."
+        ],
+        "signature": "Cu\u00a0dragoste, Nume\u00a0&\u00a0Nume\u00a0♡"
+      },
+      "venue": {
+        "subtitle": "Locul desfășurării",
+        "description": "Numele sălii",
+        "address": "Adresa",
+        "mapButton": "Vedeți pe hartă"
+      },
+      "timeline": {
+        "subtitle": "DD luna YYYY",
+        "title": "Programul zilei",
+        "events": [
+          { "title": "Întâlnirea invitaților", "desc": "Descriere..." },
+          { "title": "Ceremonia de nuntă", "desc": "Descriere..." },
+          { "title": "Începutul banchetului", "desc": "Descriere..." },
+          { "title": "Tortul de nuntă", "desc": "Descriere..." },
+          { "title": "Sfârșitul serii", "desc": "Descriere..." }
+        ]
+      },
+      "dresscode": {
+        "subtitle": "Dorințe",
+        "title": "Cereri & Dress code",
+        "paletteTitle": "Paleta de culori",
+        "wishes": [
+          { "title": "Dress code", "text": "Descriere..." },
+          { "title": "Cadou", "text": "Descriere..." }
+        ]
+      },
+      "rsvp": {
+        "subtitle": "Confirmare",
+        "title": "Chestionar invitat",
+        "description": "Răspundeți la câteva întrebări",
+        "nameLabel": "Numele și prenumele dvs.*",
+        "namePlaceholder": "Ion Popescu",
+        "nameError": "Vă rugăm să indicați numele dvs.",
+        "attendanceLabel": "Veți putea participa?*",
+        "attendanceError": "Alegeți o variantă de răspuns",
+        "attendanceYes": "Cu plăcere voi veni 🥳",
+        "attendanceNo": "Din păcate, nu voi putea 😔",
+        "attendanceLater": "Voi comunica mai târziu",
+        "childrenLabel": "Veți veni cu copii?",
+        "childrenNo": "Nu",
+        "childrenYes": "Da",
+        "childrenPlaceholder": "Număr și vârstă",
+        "drinksLabel": "Preferințe băuturi*",
+        "drinksError": "Alegeți cel puțin o variantă",
+        "foodLabel": "Preferințe mâncare",
+        "submitButton": "Trimite răspunsul",
+        "submitting": "Se trimite...",
+        "errorMessage": "A apărut o eroare. Încercați mai târziu.",
+        "successTitle": "Mulțumim!",
+        "successMessage": "Răspunsul dvs. a fost acceptat. 💌"
+      },
+      "contacts": {
+        "subtitle": "Contactați-ne",
+        "title": "Contacte",
+        "call": "Sunați",
+        "role1": "Mire",
+        "role2": "Mireasă"
+      },
+      "final": {
+        "withLove": "cu dragoste",
+        "message": "Vă așteptăm cu nerăbdare! ✨"
+      }
+    }
+  }
+}

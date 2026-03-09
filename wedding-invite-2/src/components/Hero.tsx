@@ -19,21 +19,21 @@ export default function Hero() {
       style={{
         minHeight: "100svh",
         backgroundImage: `
-          linear-gradient(160deg, rgba(253, 246, 239, 0.45) 0%, rgba(245, 232, 220, 0.45) 50%, rgba(237, 224, 212, 0.45) 100%),
-          url("/back.jpg")
+          linear-gradient(160deg, rgba(253,246,239,0.2) 0%, rgba(245,232,220,0.2) 50%, rgba(237,224,212,0.2) 100%),
+          url("/back.png")
         `,
         backgroundSize: "cover",
         backgroundPosition: "center 70%",
-        paddingTop: "env(safe-area-inset-top)",
-        paddingBottom: "env(safe-area-inset-bottom)",
+        borderRadius: 0,
+        padding: "0 24px",
       }}
     >
       {/* Floating decorative circles */}
       <div
-        className="float-anim absolute rounded-full opacity-30"
+        className="float-anim absolute rounded-full opacity-25"
         style={{
-          width: 220,
-          height: 220,
+          width: 180,
+          height: 180,
           background: "radial-gradient(circle, #e8c4b0 0%, transparent 70%)",
           top: "8%",
           left: "-8%",
@@ -41,7 +41,7 @@ export default function Hero() {
         }}
       />
       <div
-        className="float-anim absolute rounded-full opacity-20"
+        className="float-anim absolute rounded-full opacity-15"
         style={{
           width: 160,
           height: 160,
@@ -66,16 +66,16 @@ export default function Hero() {
       {/* Main content */}
       <div
         ref={titleRef}
-        className="stagger-children relative z-10 px-5"
-        style={{ maxWidth: 420 }}
+        className="stagger-children relative z-10"
+        style={{ maxWidth: 380 }}
       >
         <p
           style={{
             fontFamily: "var(--font-montserrat), sans-serif",
-            fontSize: "clamp(12px, 2.5vw, 13px)",
-            letterSpacing: "0.25em",
+            fontSize: "clamp(10px, 2.5vw, 12px)",
+            letterSpacing: "0.3em",
             textTransform: "uppercase",
-            color: "var(--dusty-rose)",
+            color: "#ebe3db",
             marginBottom: "1.2rem",
           }}
         >
@@ -85,7 +85,7 @@ export default function Hero() {
         <h1
           style={{
             fontFamily: "var(--font-cormorant), serif",
-            fontSize: "clamp(48px, 14vw, 88px)",
+            fontSize: "clamp(44px, 13vw, 80px)",
             fontWeight: 300,
             lineHeight: 1.05,
             color: "var(--text-dark)",
@@ -94,21 +94,31 @@ export default function Hero() {
         >
           {hero.name1}
           <br />
-          <span style={{ color: "var(--dusty-rose)" }}>&amp;</span>
+          <span
+            style={{
+              fontFamily: "var(--font-montserrat), sans-serif",
+              fontSize: "clamp(16px, 4vw, 20px)",
+              letterSpacing: "0.4em",
+              textTransform: "uppercase",
+              color: "#ebe3db",
+            }}
+          >
+            &amp;
+          </span>
           <br />
           {hero.name2}
         </h1>
 
-        <div className="divider" style={{ margin: "1.8rem auto" }} />
+        <div className="divider" style={{ margin: "2rem auto" }} />
 
         <p
           style={{
             fontFamily: "var(--font-cormorant), serif",
             fontSize: "clamp(18px, 5vw, 26px)",
             fontWeight: 400,
-            color: "var(--text-mid)",
-            letterSpacing: "0.12em",
-            marginBottom: "2.5rem",
+            color: "#ebe3db",
+            letterSpacing: "0.15em",
+            marginBottom: "3rem",
           }}
         >
           {hero.date}
@@ -120,7 +130,7 @@ export default function Hero() {
             flexDirection: "column",
             alignItems: "center",
             gap: 8,
-            opacity: 0.55,
+            opacity: 0.5,
           }}
         >
           <p
@@ -129,7 +139,7 @@ export default function Hero() {
               fontSize: 11,
               letterSpacing: "0.2em",
               textTransform: "uppercase",
-              color: "var(--text-mid)",
+              color: "#ebe3db",
             }}
           >
             {hero.scrollHint}
@@ -137,7 +147,7 @@ export default function Hero() {
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path
               d="M10 4v12M4 10l6 6 6-6"
-              stroke="var(--dusty-rose)"
+              stroke="#ebe3db"
               strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
