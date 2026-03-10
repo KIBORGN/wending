@@ -1,33 +1,33 @@
 "use client";
 /* eslint-disable @next/next/no-html-link-for-pages */
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useLang } from "@/context/LanguageContext";
 
 const ADMIN_KEY = "wedding_admin";
 
 export function useIsAdmin() {
-  const [isAdmin, setIsAdmin] = useState(false);
   const searchParams = useSearchParams();
+  const adminParam = searchParams.get("admin");
 
   useEffect(() => {
     // ?admin=1 activates admin mode, ?admin=0 deactivates
-    const adminParam = searchParams.get("admin");
     if (adminParam === "1") {
       localStorage.setItem(ADMIN_KEY, "1");
-      setIsAdmin(true);
-    } else if (adminParam === "0") {
-      localStorage.removeItem(ADMIN_KEY);
-      setIsAdmin(false);
-    } else {
-      setIsAdmin(localStorage.getItem(ADMIN_KEY) === "1");
+      return;
     }
-  }, [searchParams]);
 
-  return isAdmin;
+    if (adminParam === "0") {
+      localStorage.removeItem(ADMIN_KEY);
+    }
+  }, [adminParam]);
+
+  if (adminParam === "1") return true;
+  if (adminParam === "0") return false;
+  if (typeof window === "undefined") return false;
+  return localStorage.getItem(ADMIN_KEY) === "1";
 }
-
 export default function LanguageToggle() {
   const { lang, toggleLang, settings } = useLang();
   const pathname = usePathname();
@@ -149,3 +149,4 @@ export default function LanguageToggle() {
     </>
   );
 }
+

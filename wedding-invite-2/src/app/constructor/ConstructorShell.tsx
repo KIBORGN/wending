@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import dynamic from "next/dynamic";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { LanguageProvider } from "@/context/LanguageContext";
 import LanguageToggle from "@/components/LanguageToggle";
 
@@ -14,25 +14,35 @@ const InviteConstructor = dynamic(
 );
 
 export default function ConstructorShell() {
-  const [authorized, setAuthorized] = useState<boolean | null>(null);
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const adminParam = searchParams.get("admin");
 
   useEffect(() => {
-    const adminParam = searchParams.get("admin");
     if (adminParam === "1") {
       localStorage.setItem(ADMIN_KEY, "1");
+      return;
     }
-    setAuthorized(localStorage.getItem(ADMIN_KEY) === "1");
-  }, [searchParams]);
 
-  // Loading state
-  if (authorized === null) return null;
+    if (adminParam === "0") {
+      localStorage.removeItem(ADMIN_KEY);
+    }
+  }, [adminParam]);
 
-  // Not admin — redirect to home
-  if (!authorized) {
-    if (typeof window !== "undefined") window.location.href = "/";
-    return null;
-  }
+  const authorized =
+    adminParam === "1"
+      ? true
+      : adminParam === "0"
+        ? false
+        : typeof window !== "undefined" && localStorage.getItem(ADMIN_KEY) === "1";
+
+  useEffect(() => {
+    if (!authorized) {
+      router.replace("/");
+    }
+  }, [authorized, router]);
+
+  if (!authorized) return null;
 
   return (
     <LanguageProvider>
@@ -41,3 +51,4 @@ export default function ConstructorShell() {
     </LanguageProvider>
   );
 }
+

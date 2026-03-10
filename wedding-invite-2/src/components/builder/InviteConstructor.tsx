@@ -1,7 +1,7 @@
 "use client";
+/* eslint-disable @next/next/no-img-element */
 
-import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Hero from "@/components/Hero";
 import Message from "@/components/Message";
 import Venue from "@/components/Venue";
@@ -65,6 +65,10 @@ interface BuilderLayer {
 interface ConstructorData {
   blocks: BuilderBlock[];
   layers: BuilderLayer[];
+  blockOffsets: Record<string, { x: number; y: number }>;
+  layerOffsets: Record<string, { x: number; y: number }>;
+  photoOverrides: Record<string, string>;
+  textOverrides: Record<string, string>;
 }
 
 const STORAGE_KEY = "wedding-constructor-v1";
@@ -166,15 +170,52 @@ function normalizeRSVPFields(fields?: Partial<Record<RSVPFieldKey, boolean>>) {
   };
 }
 
+function sanitizeOffsets(value: unknown) {
+  if (!value || typeof value !== "object") return {} as Record<string, { x: number; y: number }>;
+
+  const entries = Object.entries(value as Record<string, unknown>).filter(([, raw]) => {
+    if (!raw || typeof raw !== "object") return false;
+    const point = raw as { x?: unknown; y?: unknown };
+    return (
+      typeof point.x === "number" &&
+      Number.isFinite(point.x) &&
+      typeof point.y === "number" &&
+      Number.isFinite(point.y)
+    );
+  });
+
+  return Object.fromEntries(entries) as Record<string, { x: number; y: number }>;
+}
+
+function sanitizePhotoOverrides(value: unknown) {
+  if (!value || typeof value !== "object") return {} as Record<string, string>;
+  return Object.fromEntries(
+    Object.entries(value as Record<string, unknown>).filter((entry) => typeof entry[1] === "string")
+  ) as Record<string, string>;
+}
+
+function sanitizeTextOverrides(value: unknown) {
+  if (!value || typeof value !== "object") return {} as Record<string, string>;
+  return Object.fromEntries(
+    Object.entries(value as Record<string, unknown>).filter((entry) => typeof entry[1] === "string")
+  ) as Record<string, string>;
+}
+
 function extractConfig(value: unknown): ConstructorData {
   const parsed = (value ?? {}) as {
-    blocks?: Array<Partial<BuilderBlock>>;
-    layers?: Array<Partial<BuilderLayer>>;
+    blocks?: Array<Partial<BuilderBlock> | null>;
+    layers?: Array<Partial<BuilderLayer> | null>;
+    blockOffsets?: unknown;
+    layerOffsets?: unknown;
+    photoOverrides?: unknown;
+    textOverrides?: unknown;
   };
 
   const blocks = (parsed.blocks ?? [])
     .filter((entry): entry is Partial<BuilderBlock> & { type: BlockType } => {
-      return typeof entry.type === "string" && entry.type in BLOCK_LABELS;
+      if (!entry || typeof entry !== "object") return false;
+      const type = (entry as { type?: unknown }).type;
+      return typeof type === "string" && type in BLOCK_LABELS;
     })
     .map((entry) => ({
       id: entry.id || makeId(entry.type),
@@ -184,7 +225,10 @@ function extractConfig(value: unknown): ConstructorData {
     }));
 
   const layers = (parsed.layers ?? [])
-    .filter((entry) => typeof entry.src === "string")
+    .filter((entry): entry is Partial<BuilderLayer> => {
+      if (!entry || typeof entry !== "object") return false;
+      return typeof (entry as { src?: unknown }).src === "string";
+    })
     .map((entry, index) => ({
       id: entry.id || makeId("layer"),
       name: entry.name || `Слой ${index + 1}`,
@@ -198,13 +242,24 @@ function extractConfig(value: unknown): ConstructorData {
       zIndex: typeof entry.zIndex === "number" ? entry.zIndex : 21,
     }));
 
-  return { blocks, layers };
+  return {
+    blocks,
+    layers,
+    blockOffsets: sanitizeOffsets(parsed.blockOffsets),
+    layerOffsets: sanitizeOffsets(parsed.layerOffsets),
+    photoOverrides: sanitizePhotoOverrides(parsed.photoOverrides),
+    textOverrides: sanitizeTextOverrides(parsed.textOverrides),
+  };
 }
 
 function readInitialState(): ConstructorData {
   const fallback = {
     blocks: makeDefaultBlocks(),
     layers: makeDefaultLayers(),
+    blockOffsets: {},
+    layerOffsets: {},
+    photoOverrides: {},
+    textOverrides: {},
   };
 
   if (typeof window === "undefined") {
@@ -221,6 +276,10 @@ function readInitialState(): ConstructorData {
     return {
       blocks: parsed.blocks.length ? parsed.blocks : fallback.blocks,
       layers: parsed.layers,
+      blockOffsets: parsed.blockOffsets,
+      layerOffsets: parsed.layerOffsets,
+      photoOverrides: parsed.photoOverrides,
+      textOverrides: parsed.textOverrides,
     };
   } catch {
     return fallback;
@@ -249,20 +308,108 @@ function blockToCssVars(theme: BlockTheme): React.CSSProperties {
   } as React.CSSProperties;
 }
 
+
+function getPathKey(root: HTMLElement, target: HTMLElement): string | null {
+  const path: number[] = [];
+  let current: HTMLElement | null = target;
+
+  while (current && current !== root) {
+    const parentElement: HTMLElement | null = current.parentElement;
+    if (!parentElement) return null;
+    const index = Array.prototype.indexOf.call(parentElement.children, current);
+    if (index < 0) return null;
+    path.unshift(index);
+    current = parentElement;
+  }
+
+  if (current !== root) return null;
+  return path.join(".");
+}
+
+function getElementByPathKey(root: HTMLElement, key: string) {
+  if (!key) return root;
+
+  const indexes = key
+    .split(".")
+    .map((v) => Number(v))
+    .filter((v) => Number.isInteger(v) && v >= 0);
+
+  let current: HTMLElement | null = root;
+  for (const index of indexes) {
+    if (!current || !current.children[index]) return null;
+    current = current.children[index] as HTMLElement;
+  }
+
+  return current;
+}
+
+function setLiveTransform(element: HTMLElement, x: number, y: number) {
+  const base = (element.style.transform || "").replace(/\s*translate\([^)]*\)/g, "").trim();
+  element.style.transform = `${base} translate(${x}px, ${y}px)`.trim();
+}
+
+function findEditableTextNode(root: HTMLElement, target: HTMLElement) {
+  let current: HTMLElement | null = target;
+  while (current && current !== root) {
+    if (current.closest(".constructor-chip")) {
+      current = current.parentElement;
+      continue;
+    }
+
+    if (
+      current.matches("p,h1,h2,h3,h4,h5,h6,span,a,button,label,li,strong,em,small,b,i") &&
+      current.childElementCount === 0 &&
+      (current.textContent || "").trim().length > 0
+    ) {
+      return current;
+    }
+    current = current.parentElement;
+  }
+  return null;
+}
+
 export default function InviteConstructor() {
   const [initialData] = useState(readInitialState);
   const [blocks, setBlocks] = useState<BuilderBlock[]>(initialData.blocks);
   const [layers, setLayers] = useState<BuilderLayer[]>(initialData.layers);
-  const [selectedBlockId, setSelectedBlockId] = useState<string | null>(initialData.blocks[0]?.id ?? null);
-  const [selectedLayerId, setSelectedLayerId] = useState<string | null>(initialData.layers[0]?.id ?? null);
+  const [blockOffsets, setBlockOffsets] = useState<Record<string, { x: number; y: number }>>(
+    initialData.blockOffsets
+  );
+  const [layerOffsets, setLayerOffsets] = useState<Record<string, { x: number; y: number }>>(
+    initialData.layerOffsets
+  );
+  const [photoOverrides, setPhotoOverrides] = useState<Record<string, string>>(
+    initialData.photoOverrides
+  );
+  const [textOverrides, setTextOverrides] = useState<Record<string, string>>(
+    initialData.textOverrides
+  );
+  const [selectedBlockId, setSelectedBlockId] = useState<string | null>(
+    initialData.blocks[0]?.id ?? null
+  );
+  const [selectedLayerId, setSelectedLayerId] = useState<string | null>(
+    initialData.layers[0]?.id ?? null
+  );
   const [newBlockType, setNewBlockType] = useState<BlockType>("message");
   const [newLayerSrc, setNewLayerSrc] = useState("/2.png");
   const [configDraft, setConfigDraft] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
 
+  const previewRef = useRef<HTMLDivElement>(null);
+  const dragRef = useRef<{
+    id: string;
+    startX: number;
+    startY: number;
+    originX: number;
+    originY: number;
+    kind: "block" | "layer";
+    target: HTMLElement;
+    moved: boolean;
+  } | null>(null);
+
   useEffect(() => {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ blocks, layers }));
-  }, [blocks, layers]);
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ blocks, layers, blockOffsets, layerOffsets, photoOverrides, textOverrides }));
+  }, [blocks, layers, blockOffsets, layerOffsets, photoOverrides, textOverrides]);
 
   const selectedBlock = blocks.find((block) => block.id === selectedBlockId) ?? null;
   const selectedLayer = layers.find((layer) => layer.id === selectedLayerId) ?? null;
@@ -273,10 +420,203 @@ export default function InviteConstructor() {
   );
 
   const serializedConfig = useMemo(
-    () => JSON.stringify({ blocks, layers }, null, 2),
-    [blocks, layers]
+    () => JSON.stringify({ blocks, layers, blockOffsets, layerOffsets, photoOverrides, textOverrides }, null, 2),
+    [blocks, layers, blockOffsets, layerOffsets, photoOverrides, textOverrides]
   );
 
+
+  useEffect(() => {
+    const root = previewRef.current;
+    if (!root) return;
+
+    Object.entries(photoOverrides).forEach(([key, src]) => {
+      const node = getElementByPathKey(root, key);
+      if (node instanceof HTMLImageElement) {
+        node.src = src;
+      }
+    });
+
+    Object.entries(textOverrides).forEach(([key, value]) => {
+      const node = getElementByPathKey(root, key);
+      if (node && !(node instanceof HTMLImageElement)) {
+        node.textContent = value;
+      }
+    });
+  }, [photoOverrides, textOverrides, blocks, layers]);
+
+  useEffect(() => {
+    const root = previewRef.current;
+    if (!root) return;
+
+    const onMouseMove = (event: MouseEvent) => {
+      const drag = dragRef.current;
+      if (!drag) return;
+
+      const dx = event.clientX - drag.startX;
+      const dy = event.clientY - drag.startY;
+      const x = drag.originX + dx;
+      const y = drag.originY + dy;
+      drag.moved = true;
+      setLiveTransform(drag.target, x, y);
+    };
+
+    const onMouseUp = (event: MouseEvent) => {
+      const drag = dragRef.current;
+      if (!drag) return;
+
+      drag.target.style.outline = "";
+      const dx = event.clientX - drag.startX;
+      const dy = event.clientY - drag.startY;
+      const x = drag.originX + dx;
+      const y = drag.originY + dy;
+
+      if (drag.moved) {
+        if (drag.kind === "block") {
+          setBlockOffsets((prev) => ({ ...prev, [drag.id]: { x, y } }));
+        } else {
+          setLayerOffsets((prev) => ({ ...prev, [drag.id]: { x, y } }));
+        }
+      }
+
+      dragRef.current = null;
+    };
+
+    const onMouseDown = (event: MouseEvent) => {
+      if (!(event.ctrlKey || event.altKey)) return;
+      const target = event.target as HTMLElement;
+      if (!root.contains(target)) return;
+      if (target.closest(".constructor-chip")) return;
+      if (target.isContentEditable) return;
+
+      const layerNode = target.closest(".constructor-layer") as HTMLElement | null;
+      if (layerNode) {
+        const id = layerNode.dataset.layerId;
+        if (!id) return;
+        const point = layerOffsets[id] || { x: 0, y: 0 };
+        dragRef.current = {
+          id,
+          kind: "layer",
+          startX: event.clientX,
+          startY: event.clientY,
+          originX: point.x,
+          originY: point.y,
+          target: layerNode,
+          moved: false,
+        };
+        layerNode.style.outline = "2px dashed rgba(184,134,122,0.85)";
+        event.preventDefault();
+        return;
+      }
+
+      const blockNode = target.closest(".constructor-preview-block") as HTMLElement | null;
+      if (blockNode) {
+        const id = blockNode.dataset.blockId;
+        if (!id) return;
+        const point = blockOffsets[id] || { x: 0, y: 0 };
+        dragRef.current = {
+          id,
+          kind: "block",
+          startX: event.clientX,
+          startY: event.clientY,
+          originX: point.x,
+          originY: point.y,
+          target: blockNode,
+          moved: false,
+        };
+        blockNode.style.outline = "2px dashed rgba(184,134,122,0.85)";
+        event.preventDefault();
+      }
+    };
+
+    const onDoubleClick = (event: MouseEvent) => {
+      if (!(event.ctrlKey || event.altKey)) return;
+      const target = event.target as HTMLElement;
+      if (!root.contains(target)) return;
+
+      if (event.altKey) {
+        const imageNode = target.closest("img") as HTMLImageElement | null;
+        if (imageNode) {
+          const key = getPathKey(root, imageNode);
+          if (!key) return;
+          const currentSrc = imageNode.getAttribute("src") || imageNode.src;
+          const next = window.prompt("Новый путь к изображению", currentSrc);
+          if (next && next.trim()) {
+            const src = next.trim();
+            imageNode.src = src;
+            setPhotoOverrides((prev) => ({ ...prev, [key]: src }));
+          }
+          event.preventDefault();
+          return;
+        }
+      }
+
+      if (event.ctrlKey) {
+        const textNode = findEditableTextNode(root, target);
+        if (!textNode) return;
+        const key = getPathKey(root, textNode);
+        if (!key) return;
+
+        const oldOutline = textNode.style.outline;
+        const initial = textNode.textContent || "";
+        textNode.contentEditable = "true";
+        textNode.spellcheck = false;
+        textNode.style.outline = "2px solid rgba(184,134,122,0.95)";
+        textNode.focus();
+
+        const sel = window.getSelection();
+        if (sel) {
+          const range = document.createRange();
+          range.selectNodeContents(textNode);
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+
+        const finish = (accept: boolean) => {
+          textNode.contentEditable = "false";
+          textNode.style.outline = oldOutline;
+          textNode.removeEventListener("keydown", onKeyDown);
+          textNode.removeEventListener("blur", onBlur);
+          if (!accept) {
+            textNode.textContent = initial;
+            return;
+          }
+
+          const value = textNode.textContent || "";
+          setTextOverrides((prev) => ({ ...prev, [key]: value }));
+        };
+
+        const onKeyDown = (keyEvent: KeyboardEvent) => {
+          if (keyEvent.key === "Enter" && !keyEvent.shiftKey) {
+            keyEvent.preventDefault();
+            finish(true);
+          }
+          if (keyEvent.key === "Escape") {
+            keyEvent.preventDefault();
+            finish(false);
+          }
+        };
+
+        const onBlur = () => finish(true);
+
+        textNode.addEventListener("keydown", onKeyDown);
+        textNode.addEventListener("blur", onBlur, { once: true });
+        event.preventDefault();
+      }
+
+    };
+
+    root.addEventListener("mousedown", onMouseDown);
+    root.addEventListener("dblclick", onDoubleClick);
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+
+    return () => {
+      root.removeEventListener("mousedown", onMouseDown);
+      root.removeEventListener("dblclick", onDoubleClick);
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+  }, [blockOffsets, layerOffsets]);
   const addBlock = () => {
     const block = makeBlock(newBlockType);
     setBlocks((prev) => [...prev, block]);
@@ -320,6 +660,11 @@ export default function InviteConstructor() {
         setSelectedBlockId(next[0]?.id ?? null);
       }
       return next.length ? next : makeDefaultBlocks();
+    });
+    setBlockOffsets((prev) => {
+      const next = { ...prev };
+      delete next[id];
+      return next;
     });
   };
 
@@ -396,6 +741,11 @@ export default function InviteConstructor() {
       }
       return next;
     });
+    setLayerOffsets((prev) => {
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
   };
 
   const updateLayer = <K extends keyof BuilderLayer>(
@@ -419,6 +769,14 @@ export default function InviteConstructor() {
     }
   };
 
+  const clearCanvasEdits = () => {
+    setBlockOffsets({});
+    setLayerOffsets({});
+    setPhotoOverrides({});
+    setTextOverrides({});
+    setStatusMessage("Ручные правки холста сброшены.");
+  };
+
   const applyConfig = () => {
     try {
       const imported = extractConfig(JSON.parse(configDraft));
@@ -429,6 +787,10 @@ export default function InviteConstructor() {
 
       setBlocks(imported.blocks);
       setLayers(imported.layers);
+      setBlockOffsets(imported.blockOffsets);
+      setLayerOffsets(imported.layerOffsets);
+      setPhotoOverrides(imported.photoOverrides);
+      setTextOverrides(imported.textOverrides);
       setSelectedBlockId(imported.blocks[0]?.id ?? null);
       setSelectedLayerId(imported.layers[0]?.id ?? null);
       setStatusMessage("Конфиг применен.");
@@ -469,6 +831,22 @@ export default function InviteConstructor() {
             База: дизайн из <code>wedding-invite</code> и <code>wedding-invite-2</code>.
             Здесь вы можете собирать страницу по блокам и редактировать стили.
           </p>
+        </div>
+
+        <div className="constructor-card constructor-card--hint">
+          <h2>Управление на холсте</h2>
+          <p className="constructor-muted">
+            <b>Ctrl + drag</b> или <b>Alt + drag</b> двигает блоки и PNG/SVG слои.
+          </p>
+          <p className="constructor-muted">
+            <b>Ctrl + double click</b> по тексту включает редактирование. Enter - сохранить, Esc - отмена.
+          </p>
+          <p className="constructor-muted">
+            <b>Alt + double click</b> по картинке меняет путь к изображению.
+          </p>
+          <button className="constructor-btn" onClick={clearCanvasEdits}>
+            Сбросить ручные правки холста
+          </button>
         </div>
 
         <div className="constructor-card">
@@ -764,53 +1142,67 @@ export default function InviteConstructor() {
       <section className="constructor-preview">
         <main className="page-bg constructor-page-bg">
           <div className="ribbon-wrap">
-            <div className="ribbon constructor-ribbon-canvas">
-              {blocks.map((block, index) => (
-                <div
-                  key={block.id}
-                  className={`constructor-preview-block ${
-                    selectedBlockId === block.id ? "is-selected" : ""
-                  }`}
-                  style={blockToCssVars(block.theme)}
-                  onClick={() => setSelectedBlockId(block.id)}
-                >
-                  <button
-                    className="constructor-chip"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedBlockId(block.id);
+            <div className="ribbon constructor-ribbon-canvas" ref={previewRef}>
+              <p className="constructor-gesture-hint">
+                Ctrl/Alt + drag: двигать. Ctrl + double click: редактировать текст. Alt + double click: сменить фото.
+              </p>
+
+              {blocks.map((block, index) => {
+                const blockOffset = blockOffsets[block.id] || { x: 0, y: 0 };
+
+                return (
+                  <div
+                    key={block.id}
+                    data-block-id={block.id}
+                    className={`constructor-preview-block ${
+                      selectedBlockId === block.id ? "is-selected" : ""
+                    }`}
+                    style={{
+                      ...blockToCssVars(block.theme),
+                      transform: `translate(${blockOffset.x}px, ${blockOffset.y}px)`,
                     }}
+                    onClick={() => setSelectedBlockId(block.id)}
                   >
-                    {index + 1}. {BLOCK_LABELS[block.type]}
-                  </button>
-                  {renderBlock(block)}
-                </div>
-              ))}
+                    <button
+                      className="constructor-chip"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedBlockId(block.id);
+                      }}
+                    >
+                      {index + 1}. {BLOCK_LABELS[block.type]}
+                    </button>
+                    {renderBlock(block)}
+                  </div>
+                );
+              })}
 
               <div className="constructor-layer-canvas" aria-hidden>
-                {sortedLayers.map((layer) => (
-                  <Image
-                    key={layer.id}
-                    src={layer.src}
-                    alt={layer.name}
-                    width={Math.max(layer.width, 1)}
-                    height={Math.max(layer.height, 1)}
-                    unoptimized
-                    className={`constructor-layer ${
-                      selectedLayerId === layer.id ? "is-selected" : ""
-                    }`}
-                    onClick={() => setSelectedLayerId(layer.id)}
-                    style={{
-                      left: layer.x,
-                      top: layer.y,
-                      width: layer.width,
-                      height: layer.height,
-                      transform: `rotate(${layer.rotate}deg)`,
-                      opacity: layer.opacity,
-                      zIndex: layer.zIndex,
-                    }}
-                  />
-                ))}
+                {sortedLayers.map((layer) => {
+                  const layerOffset = layerOffsets[layer.id] || { x: 0, y: 0 };
+
+                  return (
+                    <img
+                      key={layer.id}
+                      data-layer-id={layer.id}
+                      src={layer.src}
+                      alt={layer.name}
+                      className={`constructor-layer ${
+                        selectedLayerId === layer.id ? "is-selected" : ""
+                      }`}
+                      onClick={() => setSelectedLayerId(layer.id)}
+                      style={{
+                        left: layer.x + layerOffset.x,
+                        top: layer.y + layerOffset.y,
+                        width: layer.width,
+                        height: layer.height,
+                        transform: `rotate(${layer.rotate}deg)`,
+                        opacity: layer.opacity,
+                        zIndex: layer.zIndex,
+                      }}
+                    />
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -819,5 +1211,4 @@ export default function InviteConstructor() {
     </div>
   );
 }
-
 

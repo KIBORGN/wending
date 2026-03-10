@@ -350,9 +350,11 @@ body {
 /* ============ CONSTRUCTOR ============ */
 .constructor-layout {
   min-height: 100vh;
+  height: 100vh;
   display: grid;
   grid-template-columns: 360px 1fr;
   gap: 0;
+  overflow: hidden;
 }
 
 .constructor-sidebar {
@@ -360,6 +362,7 @@ body {
   background: linear-gradient(180deg, #f8efe7 0%, #f6eadf 100%);
   padding: 16px;
   overflow-y: auto;
+  height: 100vh;
   max-height: 100vh;
 }
 
@@ -408,6 +411,29 @@ body {
 .constructor-status {
   margin-top: 8px;
   color: var(--warm-brown);
+}
+
+.constructor-card--hint b {
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.constructor-gesture-hint {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: 0;
+  border: 1px dashed rgba(184, 134, 122, 0.58);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--text-mid);
+  font-family: var(--font-montserrat), sans-serif;
+  font-size: 11px;
+  line-height: 1.4;
+  text-align: center;
+  padding: 6px 10px;
+  z-index: 70;
 }
 
 .constructor-label {
@@ -567,6 +593,7 @@ body {
 
 .constructor-preview {
   min-height: 100vh;
+  height: 100vh;
   overflow: auto;
   background: #e8ddd4;
 }
@@ -579,11 +606,14 @@ body {
 .constructor-ribbon-canvas {
   position: relative;
   overflow: visible;
+  padding-top: 36px;
 }
 
 .constructor-preview-block {
   position: relative;
   border: 1px dashed transparent;
+  cursor: default;
+  transition: border-color 0.18s ease;
 }
 
 .constructor-preview-block.is-selected {
@@ -628,12 +658,20 @@ body {
 @media (max-width: 1100px) {
   .constructor-layout {
     grid-template-columns: 1fr;
+    height: auto;
+    overflow: visible;
   }
 
   .constructor-sidebar {
+    height: auto;
     max-height: none;
     border-right: 0;
     border-bottom: 1px solid rgba(107, 79, 58, 0.18);
+  }
+
+  .constructor-preview {
+    height: auto;
+    min-height: 0;
   }
 }
 
